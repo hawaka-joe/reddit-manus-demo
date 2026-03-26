@@ -118,6 +118,7 @@ class Agent:
         while True:
             assistant_text, tool_calls = await self._call_llm()
             if assistant_text:
+                # 对应处理：打印内容
                 yield EventText(text=assistant_text)
 
             # Always append the assistant message, even if tool calls exist.
@@ -145,8 +146,10 @@ class Agent:
                         continue
 
                     t = tool_cls.model_validate(tool_args)
+                    # 对应处理：调用相关 agent 的工具
                     yield EventToolUse(tool=t)
                     result = await t()
+                    # 对应处理：打印工具返回结果
                     yield EventToolResult(tool=t, result=result)
 
                     self.messages.append(
